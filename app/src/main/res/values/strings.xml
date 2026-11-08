@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mapa en vivo</string>
+
+    <!-- Login y registro -->
+    <string name="login_titulo">Iniciar sesión</string>
+    <string name="login_subtitulo">Comparte tu ubicación con otros usuarios en tiempo real</string>
+    <string name="registro_titulo">Crear cuenta</string>
+    <string name="campo_nombre">Nombre</string>
+    <string name="campo_email">Correo electrónico</string>
+    <string name="campo_telefono">Número de teléfono</string>
+    <string name="campo_password">Contraseña</string>
+    <string name="campo_password_actual">Contraseña actual</string>
+    <string name="campo_password_nueva">Contraseña nueva</string>
+    <string name="boton_ingresar">Ingresar</string>
+    <string name="boton_registrar">Registrarme</string>
+    <string name="crear_cuenta">¿No tienes cuenta? Regístrate</string>
+    <string name="mostrar_password">Mostrar contraseña</string>
+    <string name="ocultar_password">Ocultar contraseña</string>
+    <string name="volver">Volver</string>
+    <string name="error_campos_vacios">Completa todos los campos</string>
+    <string name="error_email_invalido">El correo no es válido</string>
+    <string name="error_password_corto">La contraseña debe tener mínimo 6 caracteres</string>
+    <string name="error_login">No se pudo iniciar sesión</string>
+    <string name="error_registro">No se pudo crear la cuenta</string>
+
+    <!-- Mapa -->
+    <string name="menu_abrir">Menú</string>
+    <string name="menu_perfil">Mi perfil</string>
+    <string name="menu_cerrar_sesion">Cerrar sesión</string>
+    <string name="compartir_ubicacion">Compartir mi ubicación</string>
+    <string name="ubicacion_activa">Compartiendo en tiempo real</string>
+    <string name="ubicacion_apagada">Ubicación apagada</string>
+    <string name="centrar_mapa">Centrar en mi posición</string>
+    <string name="panel_usuarios_titulo">Usuarios en línea</string>
+    <string name="sin_usuarios_en_linea">Nadie más está en línea</string>
+    <string name="permiso_ubicacion_requerido">Necesitas aceptar el permiso de ubicación para compartir tu posición</string>
+    <plurals name="usuarios_en_linea">
+        <item quantity="one">%1$d usuario más en línea</item>
+        <item quantity="other">%1$d usuarios más en línea</item>
+    </plurals>
+
+    <!-- Perfil -->
+    <string name="perfil_titulo">Mi perfil</string>
+    <string name="datos_personales">Datos personales</string>
+    <string name="email_no_editable">El correo no se puede modificar</string>
+    <string name="guardar_cambios">Guardar cambios</string>
+    <string name="cambiar_password">Cambiar contraseña</string>
+    <string name="boton_cambiar_password">Actualizar contraseña</string>
+    <string name="perfil_actualizado">Datos actualizados</string>
+    <string name="password_actualizado">Contraseña actualizada</string>
+    <string name="foto_actualizada">Foto actualizada</string>
+    <string name="error_cargar_perfil">No se pudo cargar el perfil</string>
+    <string name="error_guardar">No se pudo guardar el cambio</string>
+    <string name="error_password_actual">La contraseña actual no es correcta</string>
+    <string name="error_subir_foto">No se pudo subir la foto</string>
+
+    <!-- Foto -->
+    <string name="cambiar_foto">Cambiar foto</string>
+    <string name="foto_perfil">Foto de perfil</string>
+    <string name="foto_elegir_origen">¿De dónde quieres tomar la foto?</string>
+    <string name="tomar_foto">Cámara</string>
+    <string name="elegir_galeria">Galería</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Token PUBLICO de Mapbox (empieza por pk.) -->
+    <string
+        name="mapbox_access_token"
+        translatable="false"
+        tools:ignore="UnusedResources">pk.eyJ1Ijoib3J0MXpqZCIsImEiOiJjbXc4ZjZxZm4wY21hMnhuN2R0bm1pcXhtIn0.M8uMSqO6lU2JOEUI_PX5WA</string>
+</resources>
