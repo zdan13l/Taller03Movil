@@ -2,6 +2,7 @@ package com.example.tallerubicacion.ui.components
 
 import android.Manifest
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,7 +47,8 @@ fun SelectorFoto(
     nombre: String,
     onFotoElegida: (Uri) -> Unit,
     modifier: Modifier = Modifier,
-    tamano: Dp = 120.dp
+    tamano: Dp = 120.dp,
+    habilitado: Boolean = true
 ) {
     val context = LocalContext.current
     var mostrarOpciones by rememberSaveable { mutableStateOf(false) }
@@ -67,16 +69,21 @@ fun SelectorFoto(
     )
 
     val abrirCamara = {
-        val uri = FotoUtil.crearUriParaCamara(context)
-        uriCamara = uri
-        camaraLauncher.launch(uri)
+        try {
+            val uri = FotoUtil.crearUriParaCamara(context)
+            uriCamara = uri
+            camaraLauncher.launch(uri)
+        } catch (_: Exception) {
+            Toast.makeText(context, R.string.error_abrir_camara, Toast.LENGTH_LONG).show()
+        }
     }
 
     val permisoCamara = rememberPermissionState(Manifest.permission.CAMERA) { concedido ->
         if (concedido) abrirCamara()
+        else Toast.makeText(context, R.string.permiso_camara_requerido, Toast.LENGTH_LONG).show()
     }
 
-    Box(modifier = modifier.clickable { mostrarOpciones = true }) {
+    Box(modifier = modifier.clickable(enabled = habilitado) { mostrarOpciones = true }) {
         AvatarUsuario(foto = foto, nombre = nombre, tamano = tamano)
         Surface(
             modifier = Modifier.align(Alignment.BottomEnd),

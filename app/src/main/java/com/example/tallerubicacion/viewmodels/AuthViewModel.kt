@@ -58,8 +58,11 @@ class AuthViewModel : ViewModel() {
                 if (foto == null) {
                     guardarUsuario(usuario, onResult)
                 } else {
-                    FotoUtil.subirFoto(context, uid, foto) { url ->
-                        guardarUsuario(usuario.copy(fotoUrl = url ?: ""), onResult)
+                    FotoUtil.subirFoto(context, uid, foto) { resultado ->
+                        guardarUsuario(usuario.copy(fotoUrl = resultado.getOrDefault(""))) { exito, mensaje ->
+                            val aviso = if (exito && resultado.isFailure) context.getString(com.example.tallerubicacion.R.string.registro_sin_foto) else mensaje
+                            onResult(exito, aviso)
+                        }
                     }
                 }
             }

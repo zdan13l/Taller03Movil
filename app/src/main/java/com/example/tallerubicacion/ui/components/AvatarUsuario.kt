@@ -33,18 +33,17 @@ fun AvatarUsuario(
         contentAlignment = Alignment.Center
     ) {
         val hayFoto = foto != null && foto != "" && foto != Uri.EMPTY
+        Text(
+            text = nombre.firstOrNull()?.uppercase() ?: "?",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = (tamano.value / 2.2f).sp
+        )
         if (hayFoto) {
             AsyncImage(
                 model = foto,
                 contentDescription = nombre,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(tamano)
-            )
-        } else {
-            Text(
-                text = nombre.firstOrNull()?.uppercase() ?: "?",
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = (tamano.value / 2.2f).sp
             )
         }
     }

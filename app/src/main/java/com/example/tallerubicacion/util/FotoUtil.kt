@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.FileProvider
+import androidx.core.content.ContextCompat
 import androidx.exifinterface.media.ExifInterface
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
@@ -22,6 +23,8 @@ object FotoUtil {
     /** Crea un archivo vacio en la carpeta de fotos y devuelve su Uri para la app de camara. */
     fun crearUriParaCamara(context: Context): Uri {
         val carpeta = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            ?: File(context.filesDir, "Pictures")
+        check(carpeta.exists() || carpeta.mkdirs())
         val archivo = File(carpeta, "${UUID.randomUUID()}.jpg")
         return FileProvider.getUriForFile(context, "${context.packageName}.provider", archivo)
     }
@@ -36,6 +39,7 @@ object FotoUtil {
 
         val limites = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, limites) }
+        if (limites.outWidth <= 0 || limites.outHeight <= 0) return null
 
         var muestreo = 1
         while (limites.outWidth / muestreo > LADO_MAXIMO * 2 || limites.outHeight / muestreo > LADO_MAXIMO * 2) {
@@ -46,12 +50,12 @@ object FotoUtil {
             BitmapFactory.decodeStream(it, null, opciones)
         } ?: return null
 
-        val orientacion = resolver.openInputStream(uri)?.use {
+        val orientacion = runCatching { resolver.openInputStream(uri)?.use {
             ExifInterface(it).getAttributeInt(
                 ExifInterface.TAG_ORIENTATION,
                 ExifInterface.ORIENTATION_NORMAL
             )
-        } ?: ExifInterface.ORIENTATION_NORMAL
+        } }.getOrNull() ?: ExifInterface.ORIENTATION_NORMAL
 
         val matriz = Matrix()
         when (orientacion) {
@@ -60,27 +64,39 @@ object FotoUtil {
             ExifInterface.ORIENTATION_ROTATE_270 -> matriz.postRotate(270f)
             ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matriz.postScale(-1f, 1f)
             ExifInterface.ORIENTATION_FLIP_VERTICAL -> matriz.postScale(1f, -1f)
+            ExifInterface.ORIENTATION_TRANSPOSE -> {
+                matriz.postRotate(90f)
+                matriz.postScale(-1f, 1f)
+            }
+            ExifInterface.ORIENTATION_TRANSVERSE -> {
+                matriz.postRotate(270f)
+                matriz.postScale(-1f, 1f)
+            }
         }
         val escala = LADO_MAXIMO.toFloat() / maxOf(original.width, original.height)
         if (escala < 1f) matriz.postScale(escala, escala)
 
         val bitmap = Bitmap.createBitmap(original, 0, 0, original.width, original.height, matriz, true)
         val salida = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, salida)
+        check(bitmap.compress(Bitmap.CompressFormat.JPEG, 85, salida))
+        if (bitmap !== original) bitmap.recycle()
+        original.recycle()
         return salida.toByteArray()
     }
 
-    /** Sube la foto a Storage (fotos/uid.jpg) y devuelve la URL de descarga, o null si fallo. */
-    fun subirFoto(context: Context, uid: String, uri: Uri, onResult: (String?) -> Unit) {
+    fun subirFoto(context: Context, uid: String, uri: Uri, onResult: (Result<String>) -> Unit) {
         val appContext = context.applicationContext
+        val ejecutor = ContextCompat.getMainExecutor(appContext)
+        fun terminar(resultado: Result<String>) {
+            ejecutor.execute { onResult(resultado) }
+        }
         thread {
-            val bytes = try {
-                prepararJpeg(appContext, uri)
-            } catch (e: Exception) {
-                null
+            val imagen = runCatching {
+                prepararJpeg(appContext, uri) ?: throw IllegalArgumentException()
             }
-            if (bytes == null) {
-                onResult(null)
+            val bytes = imagen.getOrNull()
+            if (bytes == null || bytes.isEmpty()) {
+                terminar(Result.failure(imagen.exceptionOrNull() ?: IllegalArgumentException()))
                 return@thread
             }
             val referencia = FirebaseStorage.getInstance().reference.child("fotos/$uid.jpg")
@@ -89,12 +105,11 @@ object FotoUtil {
                 .addOnSuccessListener {
                     referencia.downloadUrl
                         .addOnSuccessListener { url ->
-                            // El parametro v evita que Coil muestre la foto vieja guardada en cache.
-                            onResult("$url&v=${System.currentTimeMillis()}")
+                            terminar(Result.success("$url&v=${System.currentTimeMillis()}"))
                         }
-                        .addOnFailureListener { onResult(null) }
+                        .addOnFailureListener { terminar(Result.failure(it)) }
                 }
-                .addOnFailureListener { onResult(null) }
+                .addOnFailureListener { terminar(Result.failure(it)) }
         }
     }
 }

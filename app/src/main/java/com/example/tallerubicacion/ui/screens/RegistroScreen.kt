@@ -1,6 +1,7 @@
 package com.example.tallerubicacion.ui.screens
 
 import android.net.Uri
+import android.widget.Toast
 import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -109,7 +110,8 @@ fun RegistroScreen(
                         foto = foto,
                         nombre = nombre,
                         onFotoElegida = { foto = it },
-                        tamano = 104.dp
+                        tamano = 104.dp,
+                        habilitado = !cargando
                     )
 
                     OutlinedTextField(
@@ -177,7 +179,10 @@ fun RegistroScreen(
                                     foto = foto
                                 ) { exito, mensaje ->
                                     cargando = false
-                                    if (exito) onRegistroExitoso() else error = mensaje ?: errorRegistro
+                                    if (exito) {
+                                        if (mensaje != null) Toast.makeText(context, mensaje, Toast.LENGTH_LONG).show()
+                                        onRegistroExitoso()
+                                    } else error = mensaje ?: errorRegistro
                                 }
                             }
                         },

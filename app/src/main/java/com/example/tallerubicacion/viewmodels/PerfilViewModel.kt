@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.example.tallerubicacion.R
 import com.example.tallerubicacion.model.Usuario
 import com.example.tallerubicacion.util.FotoUtil
+import com.example.tallerubicacion.util.mensajeErrorFoto
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,7 +19,10 @@ data class PerfilUiState(
     val usuario: Usuario = Usuario(),
     val cargando: Boolean = true,
     val ocupado: Boolean = false,
-    val mensaje: String? = null
+    val mensaje: String? = null,
+    val subiendoFoto: Boolean = false,
+    val fotoPendiente: Uri? = null,
+    val errorFoto: String? = null
 )
 
 class PerfilViewModel(application: Application) : AndroidViewModel(application) {
@@ -92,17 +96,23 @@ class PerfilViewModel(application: Application) : AndroidViewModel(application) 
 
     fun cambiarFoto(uri: Uri) {
         val uid = auth.currentUser?.uid ?: return
-        _uiState.update { it.copy(ocupado = true) }
-        FotoUtil.subirFoto(getApplication(), uid, uri) { url ->
+        if (_uiState.value.ocupado) return
+        _uiState.update { it.copy(ocupado = true, subiendoFoto = true, fotoPendiente = uri, errorFoto = null) }
+        FotoUtil.subirFoto(getApplication(), uid, uri) { resultado ->
+            val url = resultado.getOrNull()
             if (url == null) {
-                mostrar(texto(R.string.error_subir_foto))
+                _uiState.update {
+                    it.copy(ocupado = false, subiendoFoto = false, errorFoto = texto(mensajeErrorFoto(resultado.exceptionOrNull())))
+                }
             } else {
                 db.collection("usuarios").document(uid).update("fotoUrl", url)
                     .addOnSuccessListener {
-                        _uiState.update { it.copy(usuario = it.usuario.copy(fotoUrl = url)) }
+                        _uiState.update { it.copy(usuario = it.usuario.copy(fotoUrl = url), subiendoFoto = false, fotoPendiente = null) }
                         mostrar(texto(R.string.foto_actualizada))
                     }
-                    .addOnFailureListener { mostrar(texto(R.string.error_guardar)) }
+                    .addOnFailureListener {
+                        _uiState.update { it.copy(ocupado = false, subiendoFoto = false, errorFoto = texto(R.string.error_guardar_foto)) }
+                    }
             }
         }
     }

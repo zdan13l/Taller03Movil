@@ -170,11 +170,25 @@ private fun TarjetaFoto(viewModel: PerfilViewModel) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             SelectorFoto(
-                foto = usuario.fotoUrl,
+                foto = if (estado.subiendoFoto) estado.fotoPendiente else usuario.fotoUrl,
                 nombre = usuario.nombre,
                 onFotoElegida = { viewModel.cambiarFoto(it) },
-                tamano = 128.dp
+                tamano = 128.dp,
+                habilitado = !estado.ocupado
             )
+            Text(
+                stringResource(if (estado.subiendoFoto) R.string.subiendo_foto else R.string.ayuda_cambiar_foto),
+                style = MaterialTheme.typography.bodySmall
+            )
+            estado.errorFoto?.let { error ->
+                Text(error, color = MaterialTheme.colorScheme.error)
+                OutlinedButton(
+                    onClick = { estado.fotoPendiente?.let(viewModel::cambiarFoto) },
+                    enabled = !estado.ocupado
+                ) {
+                    Text(stringResource(R.string.reintentar_foto))
+                }
+            }
             Text(text = usuario.nombre, style = MaterialTheme.typography.titleLarge)
             Text(text = usuario.email, style = MaterialTheme.typography.bodyMedium)
         }

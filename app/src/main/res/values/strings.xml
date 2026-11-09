@@ -54,6 +54,19 @@
     <string name="error_guardar">No se pudo guardar el cambio</string>
     <string name="error_password_actual">La contraseña actual no es correcta</string>
     <string name="error_subir_foto">No se pudo subir la foto</string>
+    <string name="subiendo_foto">Guardando foto…</string>
+    <string name="error_abrir_camara">No se pudo abrir la cámara. Puedes elegir una foto de la galería.</string>
+    <string name="permiso_camara_requerido">Acepta el permiso de cámara para tomar la foto.</string>
+    <string name="ayuda_cambiar_foto">Toca la foto para usar la cámara o la galería</string>
+    <string name="reintentar_foto">Reintentar subida</string>
+    <string name="error_leer_foto">No se pudo leer esa imagen. Elige otra foto.</string>
+    <string name="error_guardar_foto">La imagen se subió, pero no se pudo guardar en tu perfil. Inténtalo de nuevo.</string>
+    <string name="error_foto_permisos">Firebase no permite subir la foto. Revisa las reglas de Storage.</string>
+    <string name="error_foto_sesion">Inicia sesión de nuevo para subir la foto.</string>
+    <string name="error_foto_storage">Firebase no encuentra el destino de la foto. Revisa que Storage esté habilitado y que google-services.json corresponda al proyecto.</string>
+    <string name="error_foto_cuota">El almacenamiento de fotos alcanzó su límite. Consulta al administrador del proyecto.</string>
+    <string name="error_foto_conexion">No se completó la subida. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="registro_sin_foto">La cuenta se creó, pero la foto no se guardó. Puedes volver a subirla desde Mi perfil.</string>
 
     <!-- Foto -->
     <string name="cambiar_foto">Cambiar foto</string>
