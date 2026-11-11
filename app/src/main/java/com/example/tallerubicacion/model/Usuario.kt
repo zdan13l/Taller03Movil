@@ -1,9 +1,6 @@
 package com.example.tallerubicacion.model
 
-/**
- * Datos del usuario guardados en Firestore (coleccion "usuarios", documento = uid).
- * El password NO se guarda aqui, eso lo maneja Firebase Authentication.
- */
+// datos del usuario en firestore, la contrasena queda en authentication
 data class Usuario(
     val uid: String = "",
     val nombre: String = "",
@@ -12,5 +9,7 @@ data class Usuario(
     val enLinea: Boolean = false,
     val latitud: Double = 0.0,
     val longitud: Double = 0.0,
-    val fotoUrl: String = ""
+    val fotoUrl: String = "",
+    // cambia al encender el switch para reiniciar el recorrido
+    val sesion: Long = 0L
 )

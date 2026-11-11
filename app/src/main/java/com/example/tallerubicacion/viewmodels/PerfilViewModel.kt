@@ -43,7 +43,7 @@ class PerfilViewModel(application: Application) : AndroidViewModel(application) 
         _uiState.update { it.copy(mensaje = null) }
     }
 
-    /** Lee los datos actuales del usuario desde Firestore. */
+    // lee los datos del usuario en firestore
     fun cargar(uid: String) {
         val email = auth.currentUser?.email
         db.collection("usuarios").document(uid).get()
@@ -62,7 +62,7 @@ class PerfilViewModel(application: Application) : AndroidViewModel(application) 
             }
     }
 
-    /** Nombre y telefono viven en Firestore. */
+    // nombre y telefono se guardan en firestore
     fun guardarDatos(nombre: String, telefono: String) {
         val uid = auth.currentUser?.uid ?: return
         _uiState.update { it.copy(ocupado = true) }
@@ -77,7 +77,7 @@ class PerfilViewModel(application: Application) : AndroidViewModel(application) 
             .addOnFailureListener { mostrar(texto(R.string.error_guardar)) }
     }
 
-    /** La contrasena la maneja Authentication, hay que reautenticar antes de cambiarla. */
+    // la contrasena es de authentication, se reautentica antes de cambiarla
     fun cambiarPassword(actual: String, nueva: String) {
         val user = auth.currentUser ?: return
         val email = user.email ?: return
@@ -94,6 +94,7 @@ class PerfilViewModel(application: Application) : AndroidViewModel(application) 
             .addOnFailureListener { mostrar(texto(R.string.error_password_actual)) }
     }
 
+    // sube la foto nueva a storage y guarda su url en firestore
     fun cambiarFoto(uri: Uri) {
         val uid = auth.currentUser?.uid ?: return
         if (_uiState.value.ocupado) return

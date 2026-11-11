@@ -15,11 +15,12 @@ import com.example.tallerubicacion.viewmodels.PerfilViewModel
 
 @Composable
 fun AppNavHost() {
-    // Se crean aqui (ligados a la Activity) para que el rastreo siga activo al ir al perfil
+    // viewmodels de la activity para mantener el rastreo al abrir el perfil
     val authViewModel: AuthViewModel = viewModel()
     val mapaViewModel: MapaViewModel = viewModel()
     val perfilViewModel: PerfilViewModel = viewModel()
 
+    // si ya hay sesion abre el mapa
     val inicio = if (authViewModel.estaAutenticado()) MapaRoute else LoginRoute
     val backStack = rememberNavBackStack(inicio)
 

@@ -51,10 +51,11 @@ class MapaViewModel(application: Application) : AndroidViewModel(application) {
     private var escuchaYo: ListenerRegistration? = null
     private var escuchaOtros: ListenerRegistration? = null
 
-    // Usuarios en linea y el recorrido que cada uno lleva desde que se conecto
+    // usuarios en linea y su recorrido
     private val usuariosEnLinea = LinkedHashMap<String, Usuario>()
     private val rutasOtros = HashMap<String, MutableList<Point>>()
 
+    // recibe cada nueva posicion del gps
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(resultado: LocationResult) {
             resultado.locations.forEach { location ->
@@ -63,7 +64,7 @@ class MapaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    /** Se suscribe a mis datos y a los usuarios que estan en linea. Se puede llamar varias veces. */
+    // escucha mis datos y a los usuarios en linea
     fun iniciarEscuchas() {
         val miUid = auth.currentUser?.uid ?: return
 
@@ -84,12 +85,16 @@ class MapaViewModel(application: Application) : AndroidViewModel(application) {
                     for (cambio in snapshot.documentChanges) {
                         val uid = cambio.document.id
                         if (uid == miUid) continue
-                        if (cambio.type == DocumentChange.Type.REMOVED) {
-                            // Se desconecto: se borra el marcador y la linea recorrida
+                        val usuario = cambio.document.toObject(Usuario::class.java).copy(uid = uid)
+                        // recien conectado trae 0,0 hasta su primera posicion
+                        val sinPosicion = usuario.latitud == 0.0 && usuario.longitud == 0.0
+                        if (cambio.type == DocumentChange.Type.REMOVED || sinPosicion) {
+                            // desconectado: se borra marcador y linea
                             usuariosEnLinea.remove(uid)
                             rutasOtros.remove(uid)
                         } else {
-                            val usuario = cambio.document.toObject(Usuario::class.java).copy(uid = uid)
+                            // sesion nueva: empieza un recorrido nuevo
+                            if (usuariosEnLinea[uid]?.sesion != usuario.sesion) rutasOtros.remove(uid)
                             val punto = Point.fromLngLat(usuario.longitud, usuario.latitud)
                             val ruta = rutasOtros.getOrPut(uid) { mutableListOf() }
                             if (ruta.lastOrNull() != punto) ruta.add(punto)
@@ -113,14 +118,24 @@ class MapaViewModel(application: Application) : AndroidViewModel(application) {
         val uid = auth.currentUser?.uid ?: return
         if (_uiState.value.compartiendo) return
 
+        // actualizaciones de ubicacion cada 2 segundos o 3 metros
         val peticion = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
             .setMinUpdateDistanceMeters(3f)
             .build()
         clienteUbicacion.requestLocationUpdates(peticion, locationCallback, Looper.getMainLooper())
 
         _uiState.update { it.copy(compartiendo = true, miRuta = emptyList()) }
+        // reinicia posicion y sesion para que el recorrido empiece limpio
         db.collection("usuarios").document(uid)
-            .set(mapOf("enLinea" to true), SetOptions.merge())
+            .set(
+                mapOf(
+                    "enLinea" to true,
+                    "latitud" to 0.0,
+                    "longitud" to 0.0,
+                    "sesion" to System.currentTimeMillis()
+                ),
+                SetOptions.merge()
+            )
     }
 
     fun apagarUbicacion(onListo: () -> Unit = {}) {
@@ -141,6 +156,7 @@ class MapaViewModel(application: Application) : AndroidViewModel(application) {
         val uid = auth.currentUser?.uid ?: return
         if (!_uiState.value.compartiendo) return
 
+        // agrega el punto al recorrido y guarda la posicion
         _uiState.update { it.copy(miRuta = it.miRuta + punto) }
         db.collection("usuarios").document(uid).set(
             mapOf(
@@ -152,7 +168,7 @@ class MapaViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
-    /** Deja al usuario desconectado en la base de datos y cierra la sesion de Firebase. */
+    // deja al usuario desconectado y cierra la sesion
     fun cerrarSesion(onListo: () -> Unit) {
         apagarUbicacion {
             detenerEscuchas()

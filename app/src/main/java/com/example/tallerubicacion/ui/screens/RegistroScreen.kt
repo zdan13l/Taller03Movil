@@ -4,7 +4,6 @@ import android.net.Uri
 import android.widget.Toast
 import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
@@ -41,9 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.tallerubicacion.R
+import com.example.tallerubicacion.ui.components.CampoPassword
 import com.example.tallerubicacion.ui.components.FondoAuth
 import com.example.tallerubicacion.ui.components.SelectorFoto
 import com.example.tallerubicacion.viewmodels.AuthViewModel
@@ -70,19 +68,6 @@ fun RegistroScreen(
     val errorRegistro = stringResource(R.string.error_registro)
 
     FondoAuth {
-        IconButton(
-            onClick = onVolver,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .systemBarsPadding()
-                .padding(8.dp)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.volver)
-            )
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -103,9 +88,11 @@ fun RegistroScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.registro_titulo),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
+                    // foto de perfil opcional
                     SelectorFoto(
                         foto = foto,
                         nombre = nombre,
@@ -140,15 +127,11 @@ fun RegistroScreen(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         modifier = Modifier.fillMaxWidth()
                     )
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text(stringResource(R.string.campo_password)) },
-                        leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
-                        singleLine = true,
-                        visualTransformation = PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        modifier = Modifier.fillMaxWidth()
+                    CampoPassword(
+                        valor = password,
+                        onCambio = { password = it },
+                        etiqueta = stringResource(R.string.campo_password),
+                        conCandado = true
                     )
 
                     if (error != null) {
@@ -161,6 +144,7 @@ fun RegistroScreen(
 
                     Button(
                         onClick = {
+                            // valida los campos y muestra el error
                             if (nombre.isBlank() || email.isBlank() || telefono.isBlank() || password.isBlank()) {
                                 error = errorCampos
                             } else if (!Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()) {
@@ -201,6 +185,20 @@ fun RegistroScreen(
                     }
                 }
             }
+        }
+
+        // volver va al final para quedar sobre la columna y recibir el toque
+        IconButton(
+            onClick = onVolver,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .systemBarsPadding()
+                .padding(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.volver)
+            )
         }
     }
 }

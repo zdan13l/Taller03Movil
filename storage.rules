@@ -2,12 +2,12 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
-    // Foto de perfil: fotos/{uid}.jpg
+    // foto de perfil fotos/uid.jpg
     match /fotos/{archivo} {
-      // Cualquier usuario autenticado puede ver las fotos (se usan en los marcadores)
+      // cualquier usuario autenticado puede ver las fotos
       allow read: if request.auth != null;
 
-      // Solo el dueno sube su foto, que debe ser una imagen de maximo 2 MB
+      // solo el dueno sube su foto, imagen de maximo 2 MB
       allow write: if request.auth != null
                    && archivo == request.auth.uid + '.jpg'
                    && request.resource.size < 2 * 1024 * 1024

@@ -2,12 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Cada usuario es un documento: usuarios/{uid}
+    // un documento por usuario
     match /usuarios/{uid} {
-      // Cualquier usuario autenticado puede ver a los demas (para mostrarlos en el mapa)
+      // cualquier usuario autenticado puede leer
       allow read: if request.auth != null;
 
-      // Solo el dueno puede crear y modificar su propio documento
+      // solo el dueno crea y modifica su documento
       allow create, update: if request.auth != null && request.auth.uid == uid;
 
       allow delete: if false;

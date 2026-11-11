@@ -17,6 +17,7 @@ class AuthViewModel : ViewModel() {
 
     fun uidActual(): String = auth.currentUser?.uid ?: ""
 
+    // inicia sesion con email y contrasena
     fun login(email: String, pass: String, onResult: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
@@ -28,10 +29,7 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    /**
-     * Crea el usuario en Authentication (email y password) y guarda el resto de datos
-     * en Firestore. Si el usuario eligio foto, tambien la sube a Storage.
-     */
+    // crea el usuario en authentication y guarda sus datos en firestore
     fun registrar(
         context: Context,
         nombre: String,

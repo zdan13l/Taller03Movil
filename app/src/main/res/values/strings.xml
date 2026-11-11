@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mapa en vivo</string>
+    <string name="app_name">Taller03</string>
 
-    <!-- Login y registro -->
+    <!-- login y registro -->
+    <string name="logo_descripcion">Logo de Taller03</string>
+    <string name="login_encabezado">Mapa en vivo</string>
     <string name="login_titulo">Iniciar sesión</string>
     <string name="login_subtitulo">Comparte tu ubicación con otros usuarios en tiempo real</string>
     <string name="registro_titulo">Crear cuenta</string>
@@ -24,7 +26,7 @@
     <string name="error_login">No se pudo iniciar sesión</string>
     <string name="error_registro">No se pudo crear la cuenta</string>
 
-    <!-- Mapa -->
+    <!-- mapa -->
     <string name="menu_abrir">Menú</string>
     <string name="menu_perfil">Mi perfil</string>
     <string name="menu_cerrar_sesion">Cerrar sesión</string>
@@ -32,15 +34,24 @@
     <string name="ubicacion_activa">Compartiendo en tiempo real</string>
     <string name="ubicacion_apagada">Ubicación apagada</string>
     <string name="centrar_mapa">Centrar en mi posición</string>
+    <string name="ver_usuarios">Ver usuarios en línea</string>
+    <string name="activar_ubicacion_primero">Para ver tu ubicación primero debes activarla con el interruptor</string>
+    <string name="esperando_ubicacion">Obteniendo tu ubicación, espera un momento</string>
+    <string name="en_linea">En línea</string>
+    <string name="ubicacion_actual">Ubicación actual</string>
+    <string name="buscando_direccion">Buscando dirección…</string>
+    <string name="coordenadas">%1$.5f, %2$.5f</string>
+    <string name="sin_ubicacion_aun">Todavía no tiene ubicación</string>
     <string name="panel_usuarios_titulo">Usuarios en línea</string>
+    <string name="nombre_tu_usuario">%1$s (tú)</string>
     <string name="sin_usuarios_en_linea">Nadie más está en línea</string>
     <string name="permiso_ubicacion_requerido">Necesitas aceptar el permiso de ubicación para compartir tu posición</string>
     <plurals name="usuarios_en_linea">
-        <item quantity="one">%1$d usuario más en línea</item>
-        <item quantity="other">%1$d usuarios más en línea</item>
+        <item quantity="one">%1$d usuario en línea</item>
+        <item quantity="other">%1$d usuarios en línea</item>
     </plurals>
 
-    <!-- Perfil -->
+    <!-- perfil -->
     <string name="perfil_titulo">Mi perfil</string>
     <string name="datos_personales">Datos personales</string>
     <string name="email_no_editable">El correo no se puede modificar</string>
@@ -68,7 +79,7 @@
     <string name="error_foto_conexion">No se completó la subida. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="registro_sin_foto">La cuenta se creó, pero la foto no se guardó. Puedes volver a subirla desde Mi perfil.</string>
 
-    <!-- Foto -->
+    <!-- foto -->
     <string name="cambiar_foto">Cambiar foto</string>
     <string name="foto_perfil">Foto de perfil</string>
     <string name="foto_elegir_origen">¿De dónde quieres tomar la foto?</string>

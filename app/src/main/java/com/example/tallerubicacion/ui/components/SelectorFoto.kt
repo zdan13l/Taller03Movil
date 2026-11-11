@@ -36,10 +36,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
-/**
- * Foto de perfil con boton para cambiarla usando la camara o la galeria.
- * foto: lo que se muestra (una Uri recien elegida o la URL guardada en Storage).
- */
+// foto de perfil que se cambia con camara o galeria
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SelectorFoto(

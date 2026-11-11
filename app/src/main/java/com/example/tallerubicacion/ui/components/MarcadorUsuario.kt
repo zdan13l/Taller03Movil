@@ -11,16 +11,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.unit.dp
 
-/**
- * Marcador propio de la app: foto de perfil dentro de un circulo de color
- * con una punta hacia abajo que senala la posicion exacta.
- */
+// foto en circulo con una punta que senala la posicion
 @Composable
 fun MarcadorUsuario(
     foto: Any?,

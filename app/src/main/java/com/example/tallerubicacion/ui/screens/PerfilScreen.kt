@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -44,13 +45,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.tallerubicacion.R
+import com.example.tallerubicacion.ui.components.CampoPassword
 import com.example.tallerubicacion.ui.components.SelectorFoto
 import com.example.tallerubicacion.viewmodels.PerfilViewModel
 
-/** uid llega como extra de la ruta de navegacion. */
+// el uid llega como extra de la ruta
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerfilScreen(
@@ -85,9 +86,9 @@ fun PerfilScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    titleContentColor = MaterialTheme.colorScheme.onSecondary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSecondary
                 )
             )
         },
@@ -101,10 +102,12 @@ fun PerfilScreen(
             if (estado.cargando) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
-                // Dos columnas en pantallas anchas (tabletas / plegables), una sola en celulares
+                // dos columnas en pantalla ancha, una en celular
                 BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxSize()
+                        // el margen del teclado deja desplazar hasta el ultimo campo
+                        .imePadding()
                         .verticalScroll(rememberScrollState())
                 ) {
                     val pantallaAncha = maxWidth >= 720.dp
@@ -266,24 +269,16 @@ private fun TarjetaPassword(viewModel: PerfilViewModel) {
                 text = stringResource(R.string.cambiar_password),
                 style = MaterialTheme.typography.titleMedium
             )
-            OutlinedTextField(
-                value = actual,
-                onValueChange = { actual = it },
-                label = { Text(stringResource(R.string.campo_password_actual)) },
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.fillMaxWidth()
+            CampoPassword(
+                valor = actual,
+                onCambio = { actual = it },
+                etiqueta = stringResource(R.string.campo_password_actual)
             )
-            OutlinedTextField(
-                value = nueva,
-                onValueChange = { nueva = it },
-                label = { Text(stringResource(R.string.campo_password_nueva)) },
-                supportingText = { Text(stringResource(R.string.error_password_corto)) },
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.fillMaxWidth()
+            CampoPassword(
+                valor = nueva,
+                onCambio = { nueva = it },
+                etiqueta = stringResource(R.string.campo_password_nueva),
+                ayuda = stringResource(R.string.error_password_corto)
             )
             OutlinedButton(
                 onClick = {

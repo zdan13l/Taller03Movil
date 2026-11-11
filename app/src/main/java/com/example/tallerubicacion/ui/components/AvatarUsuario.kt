@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 
-/** Foto redonda del usuario. Si no tiene foto muestra la inicial de su nombre. */
+// foto redonda, o la inicial del nombre si no hay foto
 @Composable
 fun AvatarUsuario(
     foto: Any?,

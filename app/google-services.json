@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "289436856610",
-    "project_id": "taller-mapa-en-vivo",
-    "storage_bucket": "taller-mapa-en-vivo.firebasestorage.app"
+    "project_number": "940989513711",
+    "project_id": "tallerubicacion-bd367",
+    "storage_bucket": "tallerubicacion-bd367.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:289436856610:android:66f7430be1ca52efbef57b",
+        "mobilesdk_app_id": "1:940989513711:android:c8a27773e1f7f39051c01a",
         "android_client_info": {
           "package_name": "com.example.tallerubicacion"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCMsQUBITdrimBkqL_dIEaSm5jcv4wfWU4"
+          "current_key": "AIzaSyCPQlL21APd46wp3iZ2cmyZf6nhyp2KjP8"
         }
       ],
       "services": {

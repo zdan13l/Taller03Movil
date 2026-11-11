@@ -1,7 +1,11 @@
 package com.example.tallerubicacion.ui.screens
 
 import android.util.Patterns
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,23 +13,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -37,13 +39,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.tallerubicacion.R
+import com.example.tallerubicacion.ui.components.CampoPassword
 import com.example.tallerubicacion.ui.components.FondoAuth
+import com.example.tallerubicacion.ui.theme.Negro
 import com.example.tallerubicacion.viewmodels.AuthViewModel
 
 @Composable
@@ -54,7 +59,6 @@ fun LoginScreen(
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var verPassword by rememberSaveable { mutableStateOf(false) }
     var cargando by rememberSaveable { mutableStateOf(false) }
     var error by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -73,16 +77,26 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Filled.Place,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.height(72.dp)
-            )
+            // logo sobre cuadro negro con borde rojo
+            Box(
+                modifier = Modifier
+                    .size(104.dp)
+                    .clip(RoundedCornerShape(26.dp))
+                    .background(Negro)
+                    .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(26.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo_mapa),
+                    contentDescription = stringResource(R.string.logo_descripcion),
+                    modifier = Modifier.size(68.dp)
+                )
+            }
             Text(
-                text = stringResource(R.string.app_name),
+                text = stringResource(R.string.login_encabezado),
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(top = 16.dp)
             )
             Text(
                 text = stringResource(R.string.login_subtitulo),
@@ -101,7 +115,10 @@ fun LoginScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.login_titulo),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
@@ -114,25 +131,11 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text(stringResource(R.string.campo_password)) },
-                        leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
-                        trailingIcon = {
-                            IconButton(onClick = { verPassword = !verPassword }) {
-                                Icon(
-                                    imageVector = if (verPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                                    contentDescription = stringResource(
-                                        if (verPassword) R.string.ocultar_password else R.string.mostrar_password
-                                    )
-                                )
-                            }
-                        },
-                        singleLine = true,
-                        visualTransformation = if (verPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        modifier = Modifier.fillMaxWidth()
+                    CampoPassword(
+                        valor = password,
+                        onCambio = { password = it },
+                        etiqueta = stringResource(R.string.campo_password),
+                        conCandado = true
                     )
 
                     if (error != null) {
@@ -145,6 +148,7 @@ fun LoginScreen(
 
                     Button(
                         onClick = {
+                            // valida los campos y muestra el error
                             if (email.isBlank() || password.isBlank()) {
                                 error = errorCampos
                             } else if (!Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()) {
@@ -175,7 +179,10 @@ fun LoginScreen(
             }
 
             Spacer(Modifier.height(8.dp))
-            TextButton(onClick = onCrearCuenta) {
+            TextButton(
+                onClick = onCrearCuenta,
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
+            ) {
                 Text(stringResource(R.string.crear_cuenta))
             }
         }

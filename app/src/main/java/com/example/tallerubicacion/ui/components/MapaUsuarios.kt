@@ -1,10 +1,12 @@
 package com.example.tallerubicacion.ui.components
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import com.example.tallerubicacion.ui.theme.ColorMio
 import com.example.tallerubicacion.ui.theme.ColoresUsuarios
 import com.example.tallerubicacion.viewmodels.MapaUiState
@@ -31,6 +33,7 @@ fun colorDeUsuario(uid: String): Color {
 fun MapaUsuarios(
     estado: MapaUiState,
     mapViewportState: MapViewportState,
+    onMarcadorClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val oscuro = isSystemInDarkTheme()
@@ -44,15 +47,13 @@ fun MapaUsuarios(
         scaleBar = {},
         style = { MapboxStandardStyle(standardStyleState = estiloState) }
     ) {
-        // Lineas de los recorridos
+        // dibuja los recorridos
         if (estado.miRuta.size >= 2) {
             PolylineAnnotation(points = estado.miRuta) {
                 lineColor = ColorMio
-                lineWidth = 6.0
+                lineWidth = 8.0
                 lineColorUseTheme = "none"
                 lineEmissiveStrength = 1.0
-                lineBorderColor = Color.White
-                lineBorderWidth = 1.5
             }
         }
         estado.otros.forEach { otro ->
@@ -60,17 +61,15 @@ fun MapaUsuarios(
                 key(otro.usuario.uid) {
                     PolylineAnnotation(points = otro.ruta) {
                         lineColor = colorDeUsuario(otro.usuario.uid)
-                        lineWidth = 5.0
+                        lineWidth = 7.0
                         lineColorUseTheme = "none"
                         lineEmissiveStrength = 1.0
-                        lineBorderColor = Color.White
-                        lineBorderWidth = 1.5
                     }
                 }
             }
         }
 
-        // Marcador de los otros usuarios en linea
+        // marcadores de otros usuarios
         estado.otros.forEach { otro ->
             key(otro.usuario.uid) {
                 ViewAnnotation(
@@ -83,13 +82,16 @@ fun MapaUsuarios(
                     MarcadorUsuario(
                         foto = otro.usuario.fotoUrl,
                         nombre = otro.usuario.nombre,
-                        color = colorDeUsuario(otro.usuario.uid)
+                        color = colorDeUsuario(otro.usuario.uid),
+                        modifier = Modifier.pointerInput(otro.usuario.uid) {
+                            detectTapGestures { onMarcadorClick(otro.usuario.uid) }
+                        }
                     )
                 }
             }
         }
 
-        // Mi marcador
+        // marcador propio
         val miPosicion = estado.miPosicion
         if (miPosicion != null) {
             ViewAnnotation(
@@ -102,7 +104,10 @@ fun MapaUsuarios(
                 MarcadorUsuario(
                     foto = estado.yo?.fotoUrl,
                     nombre = estado.yo?.nombre ?: "",
-                    color = ColorMio
+                    color = ColorMio,
+                    modifier = Modifier.pointerInput(estado.yo?.uid) {
+                        estado.yo?.let { yo -> detectTapGestures { onMarcadorClick(yo.uid) } }
+                    }
                 )
             }
         }

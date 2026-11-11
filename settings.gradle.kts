@@ -24,7 +24,7 @@ dependencyResolutionManagement {
             authentication { create<BasicAuthentication>("basic") }
             credentials {
                 username = "mapbox"
-                // Token secreto (scope DOWNLOADS:READ) en ~/.gradle/gradle.properties
+                // token de descarga de mapbox en el gradle.properties global
                 password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").getOrElse("")
             }
         }

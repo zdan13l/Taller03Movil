@@ -12,6 +12,6 @@ data object RegistroRoute : NavKey
 @Serializable
 data object MapaRoute : NavKey
 
-// El uid viaja como dato (extra) de la ruta
+// el uid viaja como extra de la ruta
 @Serializable
 data class PerfilRoute(val uid: String) : NavKey

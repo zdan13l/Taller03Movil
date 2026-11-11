@@ -36,39 +36,35 @@ android {
 }
 
 dependencies {
-    // Mapas y localizacion
+    // mapas y ubicacion
     implementation(libs.mapbox.maps)
     implementation(libs.mapbox.extension.maps)
     implementation(libs.google.play.services.location)
     implementation(libs.google.accompanist.permissions)
 
-    // Firebase
+    // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
 
-    // Compose
+    // compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // Navegacion
+    // navegacion
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.kotlinx.serialization.core)
 
-    // Imagenes
+    // imagenes
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.exifinterface)
-
-    debugImplementation(libs.androidx.compose.ui.tooling)
 }

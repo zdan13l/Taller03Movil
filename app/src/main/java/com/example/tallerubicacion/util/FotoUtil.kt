@@ -20,7 +20,7 @@ object FotoUtil {
 
     private const val LADO_MAXIMO = 512
 
-    /** Crea un archivo vacio en la carpeta de fotos y devuelve su Uri para la app de camara. */
+    // uri temporal donde la camara guarda la foto
     fun crearUriParaCamara(context: Context): Uri {
         val carpeta = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             ?: File(context.filesDir, "Pictures")
@@ -29,11 +29,7 @@ object FotoUtil {
         return FileProvider.getUriForFile(context, "${context.packageName}.provider", archivo)
     }
 
-    /**
-     * Lee la foto, la rota segun el EXIF (la camara guarda las fotos "acostadas" y marca la
-     * orientacion en los metadatos) y la reduce de tamano. Asi la foto del marcador queda igual
-     * a la que se tomo.
-     */
+    // corrige la rotacion exif y reduce el tamano de la foto
     private fun prepararJpeg(context: Context, uri: Uri): ByteArray? {
         val resolver = context.contentResolver
 
@@ -99,12 +95,14 @@ object FotoUtil {
                 terminar(Result.failure(imagen.exceptionOrNull() ?: IllegalArgumentException()))
                 return@thread
             }
+            // sube la foto a storage
             val referencia = FirebaseStorage.getInstance().reference.child("fotos/$uid.jpg")
             val metadatos = StorageMetadata.Builder().setContentType("image/jpeg").build()
             referencia.putBytes(bytes, metadatos)
                 .addOnSuccessListener {
                     referencia.downloadUrl
                         .addOnSuccessListener { url ->
+                            // el parametro v evita la foto vieja en cache
                             terminar(Result.success("$url&v=${System.currentTimeMillis()}"))
                         }
                         .addOnFailureListener { terminar(Result.failure(it)) }
